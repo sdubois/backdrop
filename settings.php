@@ -458,3 +458,7 @@ $settings['backdrop_drupal_compatibility'] = TRUE;
 if (file_exists(__DIR__ . '/settings.local.php')) {
   include __DIR__ . '/settings.local.php';
 }
+
+if (file_exists(__DIR__ . '/settings.amezmo.php')) {
+  include __DIR__ . '/settings.amezmo.php';
+}
