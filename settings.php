@@ -34,8 +34,8 @@ $database_prefix = '';
  * $config_directories['staging'] = '/home/myusername/config/staging';
  * @endcode
  */
-$config_directories['active'] = 'files/config/active';
-$config_directories['staging'] = 'files/config/staging';
+$config_directories['active'] = 'config/active';
+$config_directories['staging'] = 'config/staging';
 
 /**
  * Skip the configuration staging directory cleanup
