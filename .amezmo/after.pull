@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# Make sure we fail our deployment if this hook fails.
+set -e;
+
+# More commands executed here.
+# Please see https://amezmo.com/docs/deployments/dependencies
+# for a full example
+
+# APPLICATION_ROOT is a default variable provided at hook execution time
+echo "Running this hook from ${APPLICATION_ROOT}";
+
+# STORAGE_DIRECTORY is provided by default in hooks
+
+DEPLOYMENT_STORAGE_DIRECTORY="${APPLICATION_ROOT}/sites/default/files";
+
+# NOTE /webroot/storage is for production, see Git tab under Staging in the site dashboard for
+# the persistant storage path for staging
+
+PERSISTENT_STORAGE_DIRECTORY="${STORAGE_DIRECTORY}/files"
+
+# Delete existing directory that may be included in the git source tree
+if [ -d "$DEPLOYMENT_STORAGE_DIRECTORY" ]; then
+    rm -rf "$DEPLOYMENT_STORAGE_DIRECTORY";
+fi
+
+# Create our persistent storage directory if it doesn't exist
+# 2775 is so files created in this directory are user and group writable
+mkdir --parents $PERSISTENT_STORAGE_DIRECTORY --mode=2775
+
+# Create our symbolic link to point our public storage directory
+# to our persistent storage directory
+ln \
+    --symbolic \
+    --force \
+    --no-dereference \
+    $PERSISTENT_STORAGE_DIRECTORY "$DEPLOYMENT_STORAGE_DIRECTORY";
