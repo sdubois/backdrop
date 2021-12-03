@@ -12,7 +12,7 @@ echo "Running this hook from ${APPLICATION_ROOT}";
 
 # STORAGE_DIRECTORY is provided by default in hooks
 
-DEPLOYMENT_STORAGE_DIRECTORY="${APPLICATION_ROOT}/sites/default/files";
+DEPLOYMENT_STORAGE_DIRECTORY="${APPLICATION_ROOT}/files";
 
 # NOTE /webroot/storage is for production, see Git tab under Staging in the site dashboard for
 # the persistant storage path for staging
