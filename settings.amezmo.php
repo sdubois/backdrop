@@ -12,8 +12,8 @@ if (isset($_ENV['APP_HOSTNAME'])) {
   ];
 
   // Config 
-  $config_directories['active'] = 'files/config_' . md5($databases) . '/active';
-  $config_directories['staging'] = 'files/config_' . md5($databases) . '/staging';
+  $config_directories['active'] = '../config/active';
+  $config_directories['staging'] = '../config/staging';
 
 
   // Configure private and temporary file paths.
