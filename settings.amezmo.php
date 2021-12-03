@@ -1,5 +1,4 @@
 <?php
-var_dump($_ENV);
 
 if (isset($_ENV['APP_HOSTNAME'])) {
   $databases['default']['default'] = [
