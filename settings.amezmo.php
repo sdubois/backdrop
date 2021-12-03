@@ -11,6 +11,10 @@ if (isset($_ENV['APP_HOSTNAME'])) {
     'username' => $_ENV['DB_USER']
   ];
 
+  // Config 
+  $config_directories['active'] = 'files/config_' . md5($databases) . '/active';
+  $config_directories['staging'] = 'files/config_' . md5($databases) . '/staging';
+
 
   // Configure private and temporary file paths.
   $settings['file_private_path'] = $_ENV['STORAGE_DIRECTORY'] . '/private';
