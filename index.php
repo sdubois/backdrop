@@ -16,7 +16,7 @@
  */
 define('BACKDROP_ROOT', getcwd());
 
-require_once (__DIR__ . '/vendor/autoload.php');
+require_once BACKDROP_ROOT . '/vendor/autoload.php';
 require_once BACKDROP_ROOT . '/core/includes/bootstrap.inc';
 backdrop_bootstrap(BACKDROP_BOOTSTRAP_FULL);
 menu_execute_active_handler();
