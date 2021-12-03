@@ -12,8 +12,8 @@ if (isset($_ENV['APP_HOSTNAME'])) {
   ];
 
   // Config 
-  $config_directories['active'] = BACKDROP_ROOT . '/files/config/active';
-  $config_directories['staging'] = BACKDROP_ROOT . '/files/config/staging';
+  $config_directories['active'] = BACKDROP_ROOT . '/webroot/storage/config/active';
+  $config_directories['staging'] = BACKDROP_ROOT . '/webroot/storage/config/staging';
 
 
   // Configure private and temporary file paths.
