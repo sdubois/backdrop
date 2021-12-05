@@ -16,7 +16,7 @@ if (isset($_ENV['APP_HOSTNAME'])) {
 
   // Config directories
   $config_directories['active'] = $_ENV['STORAGE_DIRECTORY'] . '/config/active';
-  $config_directories['staging'] = $_ENV['STORAGE_DIRECTORY'] . 'config/staging';
+  $config_directories['staging'] = $_ENV['STORAGE_DIRECTORY'] . '/config/staging';
 
 
   // Configure private and temporary file paths.
