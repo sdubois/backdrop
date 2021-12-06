@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8ed66c292e99d915f8f50477543068d5",
+    "content-hash": "ac06f229cbf03628a5353d5cb2d52304",
     "packages": [
         {
             "name": "backdrop/drush",
