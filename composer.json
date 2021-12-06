@@ -20,9 +20,7 @@
     },
     "extra": {
         "copy-file": {
-            "vendor/drush/drush": "drush",
-            "vendor/backdrop/drush/": "drush/commands/backdrop",
-            "drush/commands/backdrop": "vendor/drush/drush/commands/backdrop"
+            "vendor/backdrop/drush/": "vendor/drush/drush/commands/backdrop"
         }
     }
 }
