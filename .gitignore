@@ -20,3 +20,6 @@ sites/*/private
 
 # SQL dumps
 *.sql 
+
+# Drush is installed with composer
+drush

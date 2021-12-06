@@ -2,11 +2,26 @@
     "require": {
         "vlucas/phpdotenv": "^5.4",
         "drush/drush": "^8.4",
-        "backdrop/drush": "^1.4"
+        "backdrop/drush": "^1.4",
+        "slowprog/composer-copy-file": "^0.3.3"
     },
     "autoload": {
         "files": [
             "load.environment.php"
         ]
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "SlowProg\\CopyFile\\ScriptHandler::copy"
+        ],
+        "post-update-cmd": [
+            "SlowProg\\CopyFile\\ScriptHandler::copy"
+        ]
+    },
+    "extra": {
+        "copy-file": {
+            "vendor/drush/drush": "drush",
+            "vendor/backdrop/drush/": "drush/commands/backdrop"
+        }
     }
 }
