@@ -14,3 +14,9 @@ sites/*/private
 
 # Composer
 /vendor
+
+# Lando
+.lando.yml
+
+# SQL dumps
+*.sql 

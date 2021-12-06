@@ -1,6 +1,7 @@
 {
     "require": {
         "vlucas/phpdotenv": "^5.4",
+        "drush/drush": "^8.4",
         "backdrop/drush": "^1.4"
     },
     "autoload": {
