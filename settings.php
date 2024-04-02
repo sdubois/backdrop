@@ -438,6 +438,16 @@ $settings['backdrop_drupal_compatibility'] = TRUE;
 //$config['system.core']['block_interest_cohort'] = FALSE;
 
 /**
+ * Include a settings containing Amezmo details.
+ *
+ * To make deployment easier a settings.amezmo.php file will be included.
+ * This file will contain settings specific to Amezmo web hosting.
+ */
+if (file_exists(__DIR__ . '/settings.amezmo.php')) {
+  include __DIR__ . '/settings.amezmo.php';
+}
+
+/**
  * Include a local settings file, if available.
  *
  * To make local development easier, you can add a settings.local.php file that
@@ -459,6 +469,3 @@ if (file_exists(__DIR__ . '/settings.local.php')) {
   include __DIR__ . '/settings.local.php';
 }
 
-if (file_exists(__DIR__ . '/settings.amezmo.php')) {
-  include __DIR__ . '/settings.amezmo.php';
-}

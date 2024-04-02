@@ -7,31 +7,44 @@ set -e;
 # Please see https://amezmo.com/docs/deployments/dependencies
 # for a full example
 
-# APPLICATION_ROOT is a default variable provided at hook execution time
-echo "Running this hook from ${APPLICATION_ROOT}";
+# APPLICATION_ROOT is a default variable provided at hook execution time.
+echo "Running after.pull from ${APPLICATION_ROOT} for release ${RELEASE_NUMBER}.";
 
-# STORAGE_DIRECTORY is provided by default in hooks
+# Create an active configuration directory if it does not yet exist.
+# `active` should NOT be publically viewable, but should be writable by the webserver.
+mkdir --parents "${PERSISTENT_STORAGE_DIRECTORY}/config/active" --mode=2770
 
-DEPLOYMENT_STORAGE_DIRECTORY="${APPLICATION_ROOT}/files";
+# Create a staging configuration directory if it does not yet exist.
+# `staging` should NOT be publically viewable, but should be writable by the webserver.
+mkdir --parents "${PERSISTENT_STORAGE_DIRECTORY}/config/staging" --mode=2770
 
-# NOTE /webroot/storage is for production, see Git tab under Staging in the site dashboard for
-# the persistant storage path for staging
+# Create a public files directory if it does not yet exist.
+# `files` should be publically viewable, and should be writable by the webserver.
+mkdir --parents "${PERSISTENT_STORAGE_DIRECTORY}/public/files" --mode=2775
 
-PERSISTENT_STORAGE_DIRECTORY="${STORAGE_DIRECTORY}/files"
-
-# Delete existing directory that may be included in the git source tree
-if [ -d "$DEPLOYMENT_STORAGE_DIRECTORY" ]; then
-    rm -rf "$DEPLOYMENT_STORAGE_DIRECTORY";
+# Delete existing `files` directory that may be included in the git source tree.
+FILES_DIRECTORY="${APPLICATION_ROOT}/files";
+if [ -d "$FILES_DIRECTORY" ]; then
+    rm -rf "$FILES_DIRECTORY";
 fi
 
-# Create our persistent storage directory if it doesn't exist
-# 2775 is so files created in this directory are user and group writable
-mkdir --parents $PERSISTENT_STORAGE_DIRECTORY --mode=2775
-
-# Create our symbolic link to point our public storage directory
-# to our persistent storage directory
+# Create a symbolic link from the Backdrop public files directory location
+# to the persistent storage location for files.
 ln \
     --symbolic \
     --force \
     --no-dereference \
-    $PERSISTENT_STORAGE_DIRECTORY "$DEPLOYMENT_STORAGE_DIRECTORY";
+    "${PERSISTENT_STORAGE_DIRECTORY}/public/files" "${APPLICATION_ROOT}/files";
+
+
+# Create a symbolic link to point the private Backdrop settings file
+# to the persistent storage location.
+#
+# Local `settings.php` files should NOT be publically viewable, and should NOT
+# be writable by the webserver.
+ln \
+    --symbolic \
+    --force \
+    --no-dereference \
+    "${PERSISTENT_STORAGE_DIRECTORY}/settings.local.php" "${APPLICATION_ROOT}/settings.local.php";
+
