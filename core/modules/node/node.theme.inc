@@ -246,9 +246,6 @@ function template_preprocess_node(&$variables) {
     }
   }
 
-  // Add article ARIA role.
-  $variables['attributes']['role'] = 'article';
-
   // Gather node classes.
   $variables['classes'][] = backdrop_html_class('node-' . $node->type);
   if ($variables['promote']) {
@@ -267,10 +264,20 @@ function template_preprocess_node(&$variables) {
     $variables['classes'][] = 'node-by-anonymous';
   }
   elseif ($node->uid == $variables['user']->uid) {
-      $variables['classes'][] = 'node-by-viewer';
+    $variables['classes'][] = 'node-by-viewer';
+  }
+
+  // Remove the link to the node if this type has a hidden path.
+  if ($node_type->settings['hidden_path'] && !user_access('view hidden paths')) {
+    // Empty the $node_url variable so the node title won't be linked.
+    $variables['node_url'] = FALSE;
   }
 
   // Add an extra theme hook suggestion for node id.
   $variables['theme_hook_suggestions'][] = 'node__' . $node->nid;
-}
 
+  // Add a legacy theme hook suggestion for content block. @todo remove in 2.x.
+  if (strstr($variables['theme_hook_original'], 'node_block')) {
+    $variables['theme_hook_suggestions'][] = 'node__block_' . $node->nid;
+  }
+}
