@@ -1994,7 +1994,7 @@ function system_update_1017() {
   $config = config('system.core');
   $config->set('log_row_limit', update_variable_get('dblog_row_limit', 1000));
   $config->set('log_identity', update_variable_get('syslog_identity', 'backdrop'));
-  $config->set('log_facility', update_variable_get('syslog_facility', LOG_LOCAL0));
+  $config->set('log_facility', update_variable_get('syslog_facility', ''));
   $config->set('log_format', update_variable_get('syslog_format', '!base_url|!timestamp|!type|!ip|!request_uri|!referer|!uid|!link|!message'));
   $config->set('error_level', $error_level);
   $config->save();
@@ -3521,6 +3521,26 @@ function system_update_1094() {
   ), $data);
   $config->setData($data);
   $config->save();
+}
+
+/**
+ * Set default values for flags for stripping sensitive headers on HTTP
+ * downgrade or host change.
+ */
+function system_update_1095() {
+  $config = config('system.core');
+  $save = FALSE;
+  if ($config->get('backdrop_http_request.strip_sensitive_headers_on_host_change') === NULL) {
+    $config->set('backdrop_http_request.strip_sensitive_headers_on_host_change', TRUE);
+    $save = TRUE;
+  }
+  if ($config->get('backdrop_http_request.strip_sensitive_headers_on_https_downgrade') === NULL) {
+    $config->set('backdrop_http_request.strip_sensitive_headers_on_https_downgrade', TRUE);
+    $save = TRUE;
+  }
+  if ($save) {
+    $config->save();
+  }
 }
 
 /**

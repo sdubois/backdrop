@@ -953,6 +953,9 @@ function backdrop_access_denied() {
  * @see backdrop_http_build_query()
  *
  * @since 1.18.4 The $options['data'] key may now be passed as an array.
+ * @since 1.27.2 Now removes any potentially sensitive headers before following
+ *   a redirect. See the 'strip_sensitive_headers_on_host_change' setting in
+ *   settings.php for details.
  */
 function backdrop_http_request($url, array $options = array()) {
   // Allow an alternate HTTP client library to replace Backdrop's default
@@ -1226,6 +1229,7 @@ function backdrop_http_request($url, array $options = array()) {
     415 => 'Unsupported Media Type',
     416 => 'Requested range not satisfiable',
     417 => 'Expectation Failed',
+    429 => 'Too Many Requests',
     500 => 'Internal Server Error',
     501 => 'Not Implemented',
     502 => 'Bad Gateway',
@@ -1262,6 +1266,15 @@ function backdrop_http_request($url, array $options = array()) {
       elseif ($options['max_redirects']) {
         // Redirect to the new location.
         $options['max_redirects']--;
+
+        // Check if we need to remove any potentially sensitive headers before
+        // following the redirect.
+        // @see https://www.rfc-editor.org/rfc/rfc9110.html#name-redirection-3xx
+        if (_backdrop_should_strip_sensitive_headers_on_http_redirect($url, $location)) {
+          unset($options['headers']['Cookie']);
+          unset($options['headers']['Authorization']);
+        }
+
         // Remove the automatically added Host header, as the redirect may
         // be on a different domain name.
         if (isset($options['headers']['Host'])) {
@@ -1279,6 +1292,36 @@ function backdrop_http_request($url, array $options = array()) {
   }
 
   return $result;
+}
+
+/**
+ * Determine whether to strip sensitive headers from a request when redirected.
+ *
+ * @param string $url
+ *   The url from the original outbound http request.
+ *
+ * @param string $location
+ *   The location to which the request has been redirected.
+ *
+ * @return boolean
+ *   Whether sensitive headers should be stripped from the request before
+ *   following the redirect.
+ */
+function _backdrop_should_strip_sensitive_headers_on_http_redirect($url, $location) {
+  $url_parsed = parse_url($url);
+  $location_parsed = parse_url($location);
+  if (!isset($location_parsed['host'])) {
+    return FALSE;
+  }
+  $strip_on_host_change = config_get('system.core', 'backdrop_http_request.strip_sensitive_headers_on_host_change');
+  $strip_on_https_downgrade = config_get('system.core', 'backdrop_http_request.strip_sensitive_headers_on_https_downgrade');
+  if ($strip_on_host_change && strcasecmp($url_parsed['host'], $location_parsed['host']) !== 0) {
+    return TRUE;
+  }
+  if ($strip_on_https_downgrade && $url_parsed['scheme'] !== $location_parsed['scheme'] && $location_parsed['scheme'] !== 'https') {
+    return TRUE;
+  }
+  return FALSE;
 }
 
 /**
@@ -2803,7 +2846,7 @@ function backdrop_http_header_attributes(array $attributes = array()) {
  *
  * Attribute values are sanitized by running them through check_plain().
  * Attribute names are not automatically sanitized. When using user-supplied
- * attribute names, it is strongly recommended to allow only white-listed names,
+ * attribute names, it is strongly recommended to ensure that they are allowed,
  * since certain attributes carry security risks and can be abused.
  *
  * Examples of security aspects when using backdrop_attributes:
@@ -4702,7 +4745,6 @@ function backdrop_add_js($data = NULL, $options = NULL) {
       // Register all required libraries.
       backdrop_add_library('system', 'jquery', TRUE);
       backdrop_add_library('system', 'jquery.once', TRUE);
-      backdrop_add_library('system', 'html5shiv', TRUE);
     }
 
     switch ($options['type']) {
